@@ -249,4 +249,25 @@ One useful aspect of tree-based methods is the ability to extract feature import
 
 Tree models in sklearn have a .feature_importances_ property that's accessible after fitting the model. This stores the feature importance scores. We need to get the indices of the sorted feature importances using np.argsort() in order to make a nice-looking bar plot of feature importances (sorted from greatest to least importance).
 
+Instructions
 
+1.    Use the feature_importances_ property of our random forest model (rfr) to extract feature importances into the importances variable.
+2.    Use numpy's argsort to get indices of the feature importances from greatest to least, and save the sorted indices in the sorted_index variable.
+3.    Set xtick labels to be feature names in the labels variable, using the sorted_index list. feature_names must be converted to a numpy array so we can index it with the sorted_index list.
+
+```
+# Get feature importances from our random forest model
+importances = rfr.feature_importances_
+
+# Get the index of importances from greatest importance to least
+sorted_index = np.argsort(importances)[::-1]
+x = range(len(importances))
+
+# Create tick labels 
+labels = np.array(feature_names)[sorted_index]
+plt.bar(x, importances[sorted_index], tick_label=labels)
+
+# Rotate tick labels to vertical
+plt.xticks(rotation=90)
+plt.show()
+```
