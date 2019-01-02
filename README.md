@@ -1,37 +1,24 @@
-## Welcome to GitHub Pages
+# Feature engineering from volume
 
-You can use the [editor on GitHub](https://github.com/ckchen1417/ml-chapter2/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
+We're going to use non-linear models to make more accurate predictions. With linear models, features must be linearly correlated to the target. Other machine learning models can combine features in non-linear ways. For example, what if the price goes up when the moving average of price is going up, and the moving average of volume is going down? The only way to capture those interactions is to either multiply the features, or to use a machine learning algorithm that can handle non-linearity (e.g. random forests).
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+To incorporate more information that may interact with other features, we can add in weakly-correlated features. First we will add volume data, which we have in the lng_df as the Adj_Volume column.
 
-### Markdown
+# 1 - Feature instructions
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+1.    Create a 1-day percent change in volume (use pct_change() from pandas), and assign it to the Adj_Volume_1d_change column in lng_df.
+2.    Create a 5-day moving average of the 1-day percent change in Volume, and assign it to the Adj_Volume_1d_change_SMA column in lng_df.
+3.    Plot histograms of these two new features we created using the new_features list.
+
 
 ```markdown
-Syntax highlighted code block
+# Create 2 new volume features, 1-day % change and 5-day SMA of the % change
+new_features = ['Adj_Volume_1d_change', 'Adj_Volume_1d_change_SMA']
+feature_names.extend(new_features)
+lng_df['Adj_Volume_1d_change'] = lng_df['Adj_Volume'].pct_change(1)
+lng_df['Adj_Volume_1d_change_SMA'] = talib.SMA(lng_df['Adj_Volume_1d_change'].values,timeperiod=5)
 
-# Header 1
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
+# Plot histogram of volume % change data
+lng_df[new_features].plot(kind='hist', sharex=False, bins=50)
+plt.show()
 ```
-
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/ckchen1417/ml-chapter2/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://help.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
