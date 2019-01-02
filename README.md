@@ -28,12 +28,12 @@ We can engineer datetime features to add even more information for our non-linea
 
 We are only going to get the day of the week here, since our dataset doesn't go back very far in time. The dayofweek property from the pandas datetime index will help us get the day of the week. Then we will dummy dayofweek with pandas' get_dummies(). This creates columns for each day of the week with binary values (0 or 1). We drop the first column because it can be inferred from the others.
 
-## Create day-of-week instructions
+Create day-of-week instructions
 
-1    Use the dayofweek property from the lng_df index to get the days of the week.
-2    Use the get_dummies function on the days of the week variable, giving it a prefix of 'weekday'.
-3    Set the index of the days_of_week variable to be the same as the lng_df index so we can merge the two.
-4    Concatenate the lng_df and days_of_week DataFrames into one DataFrame.
+1.    Use the dayofweek property from the lng_df index to get the days of the week.
+2.    Use the get_dummies function on the days of the week variable, giving it a prefix of 'weekday'.
+3.    Set the index of the days_of_week variable to be the same as the lng_df index so we can merge the two.
+4.    Concatenate the lng_df and days_of_week DataFrames into one DataFrame.
 
 ```
 # Use pandas' get_dummies function to get dummies for day of the week
@@ -85,11 +85,11 @@ We can use sklearn to fit a decision tree with DecisionTreeRegressor and .fit(fe
 
 Without limiting the tree's depth (or height), it will keep splitting the data until each leaf has 1 sample in it, which is the epitome of overfitting. We'll learn more about overfitting in the coming chapters.
 
-## Fit instructions
+Fit instructions
 
-1    Use the imported class DecisionTreeRegressor with default arguments (i.e. no arguments) to create a decision tree model called decision_tree.
-2    Fit the model using train_features and train_targets which we've created earlier (and now contain day-of-week and volume features).
-3    Print the score on the training features and targets, as well as test_features and test_targets.
+1.    Use the imported class DecisionTreeRegressor with default arguments (i.e. no arguments) to create a decision tree model called decision_tree.
+2.    Fit the model using train_features and train_targets which we've created earlier (and now contain day-of-week and volume features).
+3.    Print the score on the training features and targets, as well as test_features and test_targets.
 
 ```
 from sklearn.tree import DecisionTreeRegressor
@@ -112,11 +112,11 @@ We always want to optimize our machine learning models to make the best predicti
 For regular decision trees, probably the most important hyperparameter is max_depth. This limits the number of splits in a decision tree. Let's find the best value of max_depth based on the R2
 score of our model on the test set, which we can obtain using the score() method of our decision tree models.
 
-## Try different max depths instructions
+Try different max depths instructions
 
-1 Loop through the values 3, 5, and 10 for use as the max_depth parameter in our decision tree model.
-2 Set the max_depth parameter in our DecisionTreeRegressor to be equal to d in each loop iteration.
-3 Print the model's score on the train_features and train_targets
+1. Loop through the values 3, 5, and 10 for use as the max_depth parameter in our decision tree model.
+2. Set the max_depth parameter in our DecisionTreeRegressor to be equal to d in each loop iteration.
+3. Print the model's score on the train_features and train_targets
 
 ```
 # Loop through a few different max depths and check the performance
@@ -140,11 +140,11 @@ score, but it can be helpful to see the predictions plotted vs actual values. We
 
 Ideally, we want to see diagonal lines from the lower left to the upper right. However, due to the simplicity of decisions trees, our model is not going to do well on the test set. But it will do well on the train set.
 
-## Check instructions
+Check instructions
 
-1    Create a DecisionTreeRegressor model called decision_tree using 3 for the max_depth hyperparameter.
-2    Make predictions on the train and test sets (train_features and test_features) with our decision tree model.
-3    Scatter the train and test predictions vs the actual target values with plt.scatter(), and set the label argument equal to test for the test set.
+1.    Create a DecisionTreeRegressor model called decision_tree using 3 for the max_depth hyperparameter.
+2.    Make predictions on the train and test sets (train_features and test_features) with our decision tree model.
+3.    Scatter the train and test predictions vs the actual target values with plt.scatter(), and set the label argument equal to test for the test set.
 
 ```
 # Use the best max_depth of 3 from last exercise to fit a decision tree
@@ -168,10 +168,10 @@ Data scientists often use random forest models. They perform well out of the box
 We'll create and fit the random forest model similarly to the decision trees using the .fit(features, targets) method. With sklearn's RandomForestRegressor, there's a built-in .score() method we can use to evaluate performance. This takes arguments (features, targets), and returns the R2
 score (the coefficient of determination).
 
-## Fit random forest instructions
-1 Create the random forest model with the imported RandomForestRegressor class.
-2 Fit (train) the random forest using train_features and train_targets.
-3 Print out the R2 score on the train and test sets.
+Fit random forest instructions
+1. Create the random forest model with the imported RandomForestRegressor class.
+2. Fit (train) the random forest using train_features and train_targets.
+3. Print out the R2 score on the train and test sets.
 
 ```
 from sklearn.ensemble import RandomForestRegressor
@@ -190,12 +190,12 @@ As with all models, we want to optimize performance by tuning hyperparameters. W
 
 Usually, we can use sklearn's GridSearchCV() method to search hyperparameters, but with a financial time series, we don't want to do cross-validation due to data mixing. We want to fit our models on the oldest data and evaluate on the newest data. So we'll use sklearn's ParameterGrid to create combinations of hyperparameters to search.
 
-## Tune instructions
+Tune instructions
 
-Set the n_estimators hyperparameter to be a list with one value (200) in the grid dictionary.
-Set the max_features hyperparameter to be a list containing 4 and 8 in the grid dictionary.
-Fit the random forest regressor model (rfr, already created for you) to the train_features and train_targets with each combination of hyperparameters, g, in the loop.
-Calculate R2
+1. Set the n_estimators hyperparameter to be a list with one value (200) in the grid dictionary.
+2. Set the max_features hyperparameter to be a list containing 4 and 8 in the grid dictionary.
+3. Fit the random forest regressor model (rfr, already created for you) to the train_features and train_targets with each combination of hyperparameters, g, in the loop.
+4. Calculate R2
 by using rfr.score() on test_features and append the result to the test_scores list.
 
 ```
@@ -222,11 +222,11 @@ Lastly, and as always, we want to evaluate performance of our best model to chec
 We've already seen the R2
 scores, but let's take a look at the scatter plot of predictions vs actual results using matplotlib. Perfect predictions would be a diagonal line from the lower left to the upper right.
 
-## Evaluate performance instructions
+Evaluate performance instructions
 
-1    Use the best number for max_features in our RandomForestRegressor (rfr) that we found in the previous exercise (it was 4).
-2    Make predictions using the model with the train_features and test_features.
-3    Scatter actual targets (train/test_targets) vs the predictions (train/test_predictions), and label the datasets train and test.
+1.    Use the best number for max_features in our RandomForestRegressor (rfr) that we found in the previous exercise (it was 4).
+2.    Make predictions using the model with the train_features and test_features.
+3.    Scatter actual targets (train/test_targets) vs the predictions (train/test_predictions), and label the datasets train and test.
 
 ```
 # Use the best hyperparameters from before to fit a random forest model
@@ -243,4 +243,10 @@ plt.scatter(test_targets, test_predictions, label='test')
 plt.legend()
 plt.show()
 ```
+# Random forest feature importances
+
+One useful aspect of tree-based methods is the ability to extract feature importances. This is a quantitative way to measure how much each feature contributes to our predictions. It can help us focus on our best features, possibly enhancing or tuning them, and can also help us get rid of useless features that may be cluttering up our model.
+
+Tree models in sklearn have a .feature_importances_ property that's accessible after fitting the model. This stores the feature importance scores. We need to get the indices of the sorted feature importances using np.argsort() in order to make a nice-looking bar plot of feature importances (sorted from greatest to least importance).
+
 
