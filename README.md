@@ -4,7 +4,7 @@ We're going to use non-linear models to make more accurate predictions. With lin
 
 To incorporate more information that may interact with other features, we can add in weakly-correlated features. First we will add volume data, which we have in the lng_df as the Adj_Volume column.
 
-# 1 - Feature instructions
+## Feature instructions
 
 1.    Create a 1-day percent change in volume (use pct_change() from pandas), and assign it to the Adj_Volume_1d_change column in lng_df.
 2.    Create a 5-day moving average of the 1-day percent change in Volume, and assign it to the Adj_Volume_1d_change_SMA column in lng_df.
@@ -73,3 +73,61 @@ plt.tight_layout()
 plt.show()
 ```
 
+# Fit a decision tree
+
+Random forests are a go-to model for predictions; they work well out of the box. But we'll first learn the building block of random forests -- decision trees.
+
+Decision trees split the data into groups based on the features. Decision trees start with a root node, and split the data down until we reach leaf nodes.
+
+decision tree
+
+We can use sklearn to fit a decision tree with DecisionTreeRegressor and .fit(features, targets).
+
+Without limiting the tree's depth (or height), it will keep splitting the data until each leaf has 1 sample in it, which is the epitome of overfitting. We'll learn more about overfitting in the coming chapters.
+
+## Fit instructions
+
+1    Use the imported class DecisionTreeRegressor with default arguments (i.e. no arguments) to create a decision tree model called decision_tree.
+2    Fit the model using train_features and train_targets which we've created earlier (and now contain day-of-week and volume features).
+3    Print the score on the training features and targets, as well as test_features and test_targets.
+
+```
+from sklearn.tree import DecisionTreeRegressor
+
+# Create a decision tree regression model with default arguments
+decision_tree = ____
+
+# Fit the model to the training features and targets
+decision_tree.fit(____)
+
+# Check the score on train and test
+print(decision_tree.score(train_features, train_targets))
+print(decision_tree.score(____))
+```
+
+# Try different max depths
+
+We always want to optimize our machine learning models to make the best predictions possible. We can do this by tuning hyperparameters, which are settings for our models. We will see in more detail how these are useful in future chapters, but for now think of them as knobs we can turn to tune our predictions to be as good as possible.
+
+For regular decision trees, probably the most important hyperparameter is max_depth. This limits the number of splits in a decision tree. Let's find the best value of max_depth based on the R2
+score of our model on the test set, which we can obtain using the score() method of our decision tree models.
+
+## Try different max depths instructions
+
+1 Loop through the values 3, 5, and 10 for use as the max_depth parameter in our decision tree model.
+2 Set the max_depth parameter in our DecisionTreeRegressor to be equal to d in each loop iteration.
+3 Print the model's score on the train_features and train_targets
+
+```
+# Loop through a few different max depths and check the performance
+for d in [____]:
+    # Create the tree and fit it
+    decision_tree = DecisionTreeRegressor(____)
+    decision_tree.fit(train_features, train_targets)
+
+    # Print out the scores on train and test
+    print('max_depth=', str(d))
+    print(decision_tree.score(____))
+    print(decision_tree.score(test_features, test_targets), '\n')
+    
+```
