@@ -56,7 +56,7 @@ print(lng_df.head())
 
 Now that we have our volume and datetime features, we want to check the correlations between our new features (stored in the new_features list) and the target (5d_close_future_pct) to see how strongly they are related. Recall pandas has the built-in .corr() method for DataFrames, and seaborn has a nice heatmap() function to show the correlations.
 
-## Examine instructions
+Examine instructions
 
 1    Extend our new_features variable to contain the weekdays' column names, such as weekday_1, by concatenating the weekday number with the 'weekday_' string.
 2    Use Seaborn's heatmap to plot the correlations of new_features and the target, 5d_close_future_pct.
@@ -271,3 +271,64 @@ plt.bar(x, importances[sorted_index], tick_label=labels)
 plt.xticks(rotation=90)
 plt.show()
 ```
+
+# A gradient boosting model
+
+Now we'll fit a gradient boosting (GB) model. It's been said a linear model is like a Toyota Camry, and GB is like a Black Hawk helicopter. GB has potential to outperform random forests, but doesn't always do so. This is called the no free lunch theorem, meaning we should always try lots of different models for each problem.
+
+GB is similar to random forest models, but the difference is that trees are built successively. With each iteration, the next tree fits the residual errors from the previous tree in order to improve the fit.
+
+For now we won't search our hyperparameters -- they've been searched for you.
+
+Instructions
+
+1.    Create a GradientBoostingRegressor object with the hyperparameters that have already been set for you.
+2.    Fit the gbr model to the train_features and train_targets.
+3.    Print the scores for the training and test features and targets.
+
+```
+from sklearn.ensemble import GradientBoostingRegressor
+
+# Create GB model -- hyperparameters have already been searched for you
+gbr = GradientBoostingRegressor(max_features=4,
+                                learning_rate=0.01,
+                                n_estimators=200,
+                                subsample=0.6,
+                                random_state=42)
+gbr.fit(train_features, train_targets)
+
+print(gbr.score(train_features, train_targets))
+print(gbr.score(test_features, test_targets))
+```
+
+# Gradient boosting feature importances
+
+As with random forests, we can extract feature importances from gradient boosting models to understand which features are the best predictors. Sometimes it's nice to try different tree-based models and look at the feature importances from all of them. This can help average out any peculiarities that may arise from one particular model.
+
+The feature importances are stored as a numpy array in the .feature_importances_ property of the gradient boosting model. We'll need to get the sorted indices of the feature importances, using np.argsort(), in order to make a nice plot. We want the features from largest to smallest, so we will use Python's indexing to reverse the sorted importances like feat_importances[::-1].
+
+Instructions
+
+1.    Reverse the sorted_index variable to go from greatest to least using python indexing.
+2.    Create the sorted feature labels list as labels by converting feature_names to a numpy array and indexing with sorted_index.
+3.    Create a bar plot of the xticks, and feature_importances indexed with the sorted_index variable, and labels as the xtick labels.
+
+```
+# Extract feature importances from the fitted gradient boosting model
+feature_importances = gbr.feature_importances_
+
+# Get the indices of the largest to smallest feature importances
+sorted_index = np.argsort(feature_importances)[::-1]
+x = range(features.shape[1])
+
+# Create tick labels 
+labels = np.array(feature_names)[sorted_index]
+
+plt.bar(x, feature_importances[sorted_index], tick_label=labels)
+
+# Set the tick lables to be the feature names, according to the sorted feature_idx
+plt.xticks(rotation=90)
+plt.show()
+```
+
+
