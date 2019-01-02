@@ -161,4 +161,86 @@ plt.scatter(test_predictions, test_targets, label='test')
 plt.show()
 ```
 
-# 
+# Fit a random forest
+
+Data scientists often use random forest models. They perform well out of the box, and have lots of settings to optimize performance. Random forests can be used for classification or regression; we'll use it for regression to predict the future price change of LNG.
+
+We'll create and fit the random forest model similarly to the decision trees using the .fit(features, targets) method. With sklearn's RandomForestRegressor, there's a built-in .score() method we can use to evaluate performance. This takes arguments (features, targets), and returns the R2
+score (the coefficient of determination).
+
+## Fit random forest instructions
+1 Create the random forest model with the imported RandomForestRegressor class.
+2 Fit (train) the random forest using train_features and train_targets.
+3 Print out the R2 score on the train and test sets.
+
+```
+from sklearn.ensemble import RandomForestRegressor
+
+# Create the random forest model and fit to the training data
+rfr = RandomForestRegressor(n_estimators=200)
+rfr.fit(train_features, train_targets)
+
+# Look at the R^2 scores on train and test
+print(rfr.score(train_features, train_targets))
+print(rfr.score(test_features, test_targets))
+```
+# Tune random forest hyperparameters
+
+As with all models, we want to optimize performance by tuning hyperparameters. We have many hyperparameters for random forests, but the most important is often the number of features we sample at each split, or max_features in RandomForestRegressor from the sklearn library. For models like random forests that have randomness built-in, we also want to set the random_state. This is set for our results to be reproducible.
+
+Usually, we can use sklearn's GridSearchCV() method to search hyperparameters, but with a financial time series, we don't want to do cross-validation due to data mixing. We want to fit our models on the oldest data and evaluate on the newest data. So we'll use sklearn's ParameterGrid to create combinations of hyperparameters to search.
+
+## Tune instructions
+
+Set the n_estimators hyperparameter to be a list with one value (200) in the grid dictionary.
+Set the max_features hyperparameter to be a list containing 4 and 8 in the grid dictionary.
+Fit the random forest regressor model (rfr, already created for you) to the train_features and train_targets with each combination of hyperparameters, g, in the loop.
+Calculate R2
+by using rfr.score() on test_features and append the result to the test_scores list.
+
+```
+from sklearn.model_selection import ParameterGrid
+
+# Create a dictionary of hyperparameters to search
+grid = {'n_estimators': [200], 'max_depth': [3], 'max_features': [4, 8], 'random_state': [42]}
+test_scores = []
+
+# Loop through the parameter grid, set the hyperparameters, and save the scores
+for g in ParameterGrid(grid):
+    rfr.set_params(**g)  # ** is "unpacking" the dictionary
+    rfr.fit(train_features, train_targets)
+    test_scores.append(rfr.score(test_features, test_targets))
+
+# Find best hyperparameters from the test score and print
+best_idx = np.argmax(test_scores)
+print(test_scores[best_idx], ParameterGrid(grid)[best_idx])
+```
+# Evaluate performance
+
+Lastly, and as always, we want to evaluate performance of our best model to check how well or poorly we are doing. Ideally it's best to do back-testing, but that's an involved process we don't have room to cover in this course.
+
+We've already seen the R2
+scores, but let's take a look at the scatter plot of predictions vs actual results using matplotlib. Perfect predictions would be a diagonal line from the lower left to the upper right.
+
+## Evaluate performance instructions
+
+1    Use the best number for max_features in our RandomForestRegressor (rfr) that we found in the previous exercise (it was 4).
+2    Make predictions using the model with the train_features and test_features.
+3    Scatter actual targets (train/test_targets) vs the predictions (train/test_predictions), and label the datasets train and test.
+
+```
+# Use the best hyperparameters from before to fit a random forest model
+rfr = RandomForestRegressor(n_estimators=200, max_depth=3, max_features=4, random_state=42)
+rfr.fit(train_features, train_targets)
+
+# Make predictions with our model
+train_predictions = rfr.predict(train_features)
+test_predictions = rfr.predict(test_features)
+
+# Create a scatter plot with train and test actual vs predictions
+plt.scatter(train_targets, train_predictions, label='train')
+plt.scatter(test_targets, test_predictions, label='test')
+plt.legend()
+plt.show()
+```
+
