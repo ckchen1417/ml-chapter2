@@ -95,14 +95,14 @@ Without limiting the tree's depth (or height), it will keep splitting the data u
 from sklearn.tree import DecisionTreeRegressor
 
 # Create a decision tree regression model with default arguments
-decision_tree = ____
+decision_tree = DecisionTreeRegressor()
 
 # Fit the model to the training features and targets
-decision_tree.fit(____)
+decision_tree.fit(train_features, train_targets)
 
 # Check the score on train and test
 print(decision_tree.score(train_features, train_targets))
-print(decision_tree.score(____))
+print(decision_tree.score(test_features, test_targets))
 ```
 
 # Try different max depths
@@ -120,14 +120,45 @@ score of our model on the test set, which we can obtain using the score() method
 
 ```
 # Loop through a few different max depths and check the performance
-for d in [____]:
+# Loop through a few different max depths and check the performance
+for d in [3, 5, 10]:
     # Create the tree and fit it
-    decision_tree = DecisionTreeRegressor(____)
+    decision_tree = DecisionTreeRegressor(max_depth=d)
     decision_tree.fit(train_features, train_targets)
 
     # Print out the scores on train and test
     print('max_depth=', str(d))
-    print(decision_tree.score(____))
+    print(decision_tree.score(train_features, train_targets))
     print(decision_tree.score(test_features, test_targets), '\n')
     
 ```
+# Check our results
+
+Once we have an optimized model, we want to check how it is performing in more detail. We already saw the R2
+
+score, but it can be helpful to see the predictions plotted vs actual values. We can use the .predict() method of our decision tree model to get predictions on the train and test sets.
+
+Ideally, we want to see diagonal lines from the lower left to the upper right. However, due to the simplicity of decisions trees, our model is not going to do well on the test set. But it will do well on the train set.
+
+## Check instructions
+
+1    Create a DecisionTreeRegressor model called decision_tree using 3 for the max_depth hyperparameter.
+2    Make predictions on the train and test sets (train_features and test_features) with our decision tree model.
+3    Scatter the train and test predictions vs the actual target values with plt.scatter(), and set the label argument equal to test for the test set.
+
+```
+# Use the best max_depth of 3 from last exercise to fit a decision tree
+decision_tree = DecisionTreeRegressor(max_depth=3)
+decision_tree.fit(train_features, train_targets)
+
+# Predict values for train and test
+train_predictions = decision_tree.predict(train_features)
+test_predictions = decision_tree.predict(test_features)
+
+# Scatter the predictions vs actual values
+plt.scatter(train_predictions, train_targets, label='train')
+plt.scatter(test_predictions, test_targets, label='test')
+plt.show()
+```
+
+# 
